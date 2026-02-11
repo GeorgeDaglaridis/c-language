@@ -1,11 +1,22 @@
+//#include <stdio.h>
+
 int piyush(){
 
-    //const int xyz = 10;
-    //xyz = 20;
+    struct pixel_t {
+        unsigned int l;
+        unsigned char r;
+        unsigned char g;
+        unsigned char b;
+    
+    };
 
-    volatile int i = 10;
-    i = i + 1;
-    i = i + 10;
+    struct pixel_t pixel;
+    pixel.l = 4;
+    pixel.r = 255;
+    pixel.g = 253;
+    pixel.b = 252;
+    
+    //printf("%ld\n", sizeof(pixel));
 
-    return i;
+    return 0;
 }
