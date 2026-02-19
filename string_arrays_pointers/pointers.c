@@ -67,6 +67,34 @@ int main() {
     // charptr2+2 holds the address of the third element of the 3-element array("Hi"), basically holds a "new" array("\0") 
     // created by the initial one and by indexing it [0] you ask for the first element of that new array which is '\0', null character cannot be actually printed
     printf("(charptr2+2)[0]: another way of showing the third element of the array of chars which is %c\n\n", (charptr2+2)[0]);
+    printf("/*************************************************************************************************************************************************/\n");
+    printf("/*************************************************************************************************************************************************/\n\n");
+
+    char *str = "Piyush";
+
+    // str is a pointer to a char. Once defined and initialized, *str refers to the content 
+    // of the pointer which is an address to a char, basically an address to a byte.
+    // This is why sizeof(*str) -> 1 byte 
+    printf("size of the address char pointer 'str' points to: %ld byte\n", sizeof(*str));
+    printf("address where char pointer 'str' points to: %p\n", str);
+    printf("address of the first element of char array: %p\n", &str[0]);
+    printf("address of the first element of the array of chars named ''Piyush'': %p\n", &("Piyush"[0]));
+    printf("alternative: address of the first element of the array of chars named ''Piyush'': %p\n", &("Piyush"));
+    //  warning: format ‘%c’ expects argument of type ‘int’, but argument 2 has type ‘char *’
+    printf("pointers points to an address which holds string: %s\n", str);
+    printf("pointers points to an address which holds char: %c\n", *str);
+    printf("/*************************************************************************************************************************************************/\n\n");
+
+    // the size allocated for the pointer itself has to do with the architecture of the 
+    // machine linux is running to. Here we have a x64 machine so sizeof(str) -> 8 bytes 
+    printf("size of char pointer 'str' itself: %ld bytes\n", sizeof(str));
+    printf("address allocated of the pointer 'str' itself: %p\n\n", &str);
+
+    printf("alternative: pointers points to an address which holds char: %c\n", *(&str)[0]);
+
+
+
+    
 
 
     return 0;
