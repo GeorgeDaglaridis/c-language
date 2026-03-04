@@ -91,11 +91,44 @@ int main() {
     printf("address allocated of the pointer 'str' itself: %p\n\n", &str);
 
     printf("alternative: pointers points to an address which holds char: %c\n", *(&str)[0]);
+    printf("/*************************************************************************************************************************************************/\n\n");
 
+    char number[4];
 
-
+    int *in_ptr;
+    printf("in_ptr: %p\n\n", in_ptr);
     
+    in_ptr = &number[0];  
+    
+    printf("in_ptr: %p\n\n", in_ptr);
+    printf("*in_ptr: %d\n\n", *in_ptr);
+    printf("number[0] = %d\n", number[0]);
+    printf("number[1] = %d\n", number[1]);
+    printf("number[2] = %d\n", number[2]);
+    printf("number[3] = %d\n\n", number[3]);
 
+    *in_ptr = 65;
+    printf("*in_ptr: %d\n", *in_ptr);
+    printf("*in_ptr: %c\n", *in_ptr);
+    printf("number[0] = %d\n", number[0]);
+    printf("number[1] = %d\n", number[1]);
+    printf("number[2] = %d\n", number[2]);
+    printf("number[3] = %d\n\n", number[3]);
+
+    // 0x 48(MSB)  49  21  00(LSB);
+    //*in_ptr = 0x48492100;
+
+    // 0x 00(MSB)  21  49  48(LSB);
+    *in_ptr = 0x00214948;
+
+    int i = 0;
+    while (i < 4) {
+        printf("number[%d] = %c\n", i, number[i]);
+        i = i + 1;
+    }
+    printf("\n\n\n");
 
     return 0;
+
+
 }
