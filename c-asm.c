@@ -1,54 +1,38 @@
 //#include <stdio.h>
 
 void piyush(){
+  
+    /* 1st scenario */
+    //int a = 0xA1;
+    //int b = 0x52;
+    //int c = 0x0;
 
-    int i = 11;
-    //int j = 2;
+    /* 2nd scenario */
+    //char a = 0xA1;
+    //char b = 0x52;
+    //char c = 0x0;
+
+    /* 3rd scenario */
+    unsigned char a = 0xA1;
+    unsigned char b = 0x52;
+    unsigned char c = 0x0;
+
+    c = a & b;
+    c = 0x0;
 
     /*
-    if ( i==11 ){
-        goto end;
-    }
+    c = a | b;
+    c = 0x0;
 
-    i = i + 2;
+    c = a ^ b;
+    c = 0x0;
 
-    end:
-        i = i + 21;
+    c = ~a;
+    c = 0x0;
+
+    c = ~b;
+    c = 0x0;
     */
 
-    /*
-    if (i == 1) {
-        j = j + 1;
-    } else if ( i== 2) {
-        j = j + 2;
-    } else {
-        j= j + 3;
-    } 
-    */
-    
-    /*
-    switch (i)
-    {
-        case 1:
-            j = j + 1;
-            break;
-        case 2:
-            j = j + 2;
-            break;
-        case 3:
-            j = j + 3;
-            break;
-        default:
-            j = j + 100;
-            break;
-    }
-    */
-    
-    /*
-    for (int i = 10; i > 0; --i){
-        j = j + 200;
-    }
-    */        
 
-    return;
 }
