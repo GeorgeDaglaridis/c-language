@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define SENSORS_MAX_CAPACITY 10
 
@@ -40,7 +41,7 @@ typedef union SensorData {
 } SensorData;
 
 typedef struct sensor {
-    unsigned char id;
+    uint8_t id;
     unsigned char name[20];
     SensorType sensorType;
     SensorData sensorData;
@@ -50,13 +51,13 @@ typedef struct sensor {
 // Function prototypes - Function declarations used only in this .c file (static)
 // If used by othe .c files as well remove static keyword and put them in a .h file
 static void init_sensors(Sensor *sensors, int *cnt_sensors);
-static void display_sensors(const Sensor *sensors, int cnt, unsigned char short_list);
-static void deactivate_all_sensors(Sensor *sensors, int cnt);
-static void activate_all_sensors(Sensor *sensors, int cnt);
-static void deactivate_sensors_by_type(Sensor *sensors, int cnt, SensorType sensor_type);
-static void activate_sensors_by_type(Sensor *sensors, int cnt, SensorType sensor_type);
-static void deactivate_sensor_by_ID(Sensor *sensors, int id);
-static void activate_sensor_by_ID(Sensor *sensors, int id);
+static void display_sensors(const Sensor *sensors, const int cnt, unsigned char short_list);
+static void deactivate_all_sensors(Sensor *sensors, const int cnt);
+static void activate_all_sensors(Sensor *sensors, const int cnt);
+static void deactivate_sensors_by_type(Sensor *sensors, const int cnt, const SensorType sensor_type);
+static void activate_sensors_by_type(Sensor *sensors, const int cnt, const SensorType sensor_type);
+static void deactivate_sensor_by_ID(Sensor *sensors, const int id);
+static void activate_sensor_by_ID(Sensor *sensors, const int id);
 
 // Global arrays
 static const char sensor_status_str[SENSOR_STATUS_CNT][9] = {"INACTIVE", "ACTIVE", "ERROR"}; // lives in FLASH/ROM
@@ -72,16 +73,15 @@ static const char sensor_type_str[ALL_SENSOR_TYPES][12] = {"TEMPERATURE", "HUMID
 // static const char const *sensor_type_str[ALL_SENSOR_TYPES] = {"TEMPERATURE", "HUMIDITY", "PRESSURE"}; // The string literals and the 3 pointers all live in FLASH/ROM
 
 
-void main() {
+int main() {
 
     Sensor sensors[SENSORS_MAX_CAPACITY] = {0};
     int cnt_sensors = 0;
-    unsigned char short_list = 0;
 
     init_sensors(sensors, &cnt_sensors);
 
     //deactivate_sensors(sensors, cnt_sensors);
-    //activate_sensors(sensors, cnt_sensors);
+    //activate_sensors(sensors, cnt_sensors); 
 
     display_sensors(sensors, cnt_sensors, 0); // 0: display all infos, 1: display short infos
     //deactivate_sensor_by_ID(sensors, 2);       // deactivates sensor ID 2 (index: ID # -1)
@@ -97,60 +97,7 @@ void main() {
     activate_sensors_by_type(sensors, cnt_sensors, ALL_SENSOR_TYPES);
     display_sensors(sensors, cnt_sensors, 0);
 
-
-
-    
-    // SensorData sensorData = { .pressure.altitude = 100, .pressure.reading = 50
-
-    // printf("&sensorData = %p\n", &sensorData);
-    // printf("&sensorData.temperature.min_range = %p\n", &sensorData.temperature.min_range);
-    // printf("&sensorData.temperature.max_range = %p\n", &sensorData.temperature.max_range);
-    // printf("&sensorData.temperature.reading = %p\n", &sensorData.temperature.reading);
-    // printf("&sensorData.humidity.calibration = %p\n", &sensorData.humidity.calibration);
-    // printf("&sensorData.humidity.reading = %p\n", &sensorData.humidity.reading);
-    // printf("&sensorData.pressure.altitude = %p\n", &sensorData.pressure.altitude);
-    // printf("&sensorData.pressure.reading = %p\n\n", &sensorData.pressure.reading);
-
-    // printf("sensorData.temperature.min_range = %d\n", sensorData.temperature.min_range);
-    // printf("sensorData.temperature.max_range = %d\n", sensorData.temperature.max_range);
-    // printf("sensorData.temperature.reading = %d\n", sensorData.temperature.reading);
-    // printf("sensorData.humidity.calibration = %d\n", sensorData.humidity.calibration);
-    // printf("sensorData.humidity.reading = %d\n", sensorData.humidity.reading);
-    // printf("sensorData.pressure.altitude = %d\n", sensorData.pressure.altitude);
-    // printf("sensorData.pressure.reading = %d\n", sensorData.pressure.reading);
-
-    
-    // sensorData.temperature.min_range = -10;
-    // sensorData.temperature.max_range = 10;
-    // sensorData.humidity.calibration = 20;
-    // printf("sensorData.temperature.min_range = %d\n", sensorData.temperature.min_range);
-    // printf("sensorData.temperature.max_range = %d\n", sensorData.temperature.max_range);
-    // printf("sensorData.temperature.reading = %d\n", sensorData.temperature.reading);
-    // printf("sensorData.humidity.calibration = %d\n", sensorData.humidity.calibration);
-    // printf("sensorData.humidity.reading = %d\n", sensorData.humidity.reading);
-    // //sensorData.humidity.calibration = 20;
-    // printf("sensorData.humidity.calibration = %d\n", sensorData.humidity.calibration);
-    // printf("sensorData.temperature.min_range = %d\n", sensorData.temperature.min_range);
-    // printf("sensorData.temperature.max_range = %d\n", sensorData.temperature.max_range);
-    
-    
-    
-    // sensorData.humidity.calibration = 20;
-    // printf("sensorData.humidity.calibration = %d\n", sensorData.humidity.calibration);
-    // printf("sensorData.humidity.reading = %d\n", sensorData.humidity.reading);
-    // printf("sensorData.temperature.max_range = %d\n", sensorData.temperature.max_range);
-    // printf("sensorData.temperature.min_range = %d\n", sensorData.temperature.min_range);
-    // sensorData.humidity.calibration = 10;
-    // printf("sensorData.humidity.calibration = %d\n", sensorData.humidity.calibration);
-    //
-
-    
-    // printf("sizeof(sensorData) = %d\n", sizeof(sensorData));
-    // printf("sizeof(sensorData.temperature) = %d\n", sizeof(sensorData.temperature));
-    // printf("sizeof(sensorData.humidity) = %d\n", sizeof(sensorData.humidity));
-    // printf("sizeof(sensorData.pressure) = %d\n", sizeof(sensorData.pressure));
-
-    
+    return 0;
 }
 
 void init_sensors(Sensor *sensors, int *cnt_sensors) {
@@ -173,22 +120,22 @@ void init_sensors(Sensor *sensors, int *cnt_sensors) {
         switch (sensors[i].sensorType) {
             case TEMPERATURE:
                 printf("Provide ID, name, min and max values, of Temperature sensor: ");
-                scanf("%d %s %d %d", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.temperature.min_range, &sensors[i].sensorData.temperature.max_range);
-                printf("Initialize a Temperature sensor: ID %d, \"%s\", range %d to %d celsius.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.temperature.min_range, sensors[i].sensorData.temperature.max_range);
+                scanf("%hhu %s %hd %hd", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.temperature.min_range, &sensors[i].sensorData.temperature.max_range);
+                printf("Initialize a Temperature sensor: ID %hhu, \"%s\", range %hd to %hd celsius.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.temperature.min_range, sensors[i].sensorData.temperature.max_range);
                 sensors[i].sensorStatus = ACTIVE;
                 break;
 
             case HUMIDITY:
                 printf("Provide ID, name, and calibration factor of Humidity sensor: ");
-                scanf("%d %s %f", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.humidity.calibration);
-                printf("Initialize a Humidity sensor: ID %d, \"%s\", callibration factor %.2f.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.humidity.calibration);
+                scanf("%hhu %s %f", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.humidity.calibration);
+                printf("Initialize a Humidity sensor: ID %hhu, \"%s\", callibration factor %.2f.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.humidity.calibration);
                 sensors[i].sensorStatus = ACTIVE;
                 break;
 
             case PRESSURE:
                 printf("Provide ID, name, and altitude compensation of Pressure sensor: ");
-                scanf("%d %s %d", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.pressure.altitude);
-                printf("Initialize a Pressure sensor: ID %d, \"%s\", altitude compensation %d m.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.pressure.altitude);
+                scanf("%hhu %s %hd", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.pressure.altitude);
+                printf("Initialize a Pressure sensor: ID %hhu, \"%s\", altitude compensation %hd m.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.pressure.altitude);
                 sensors[i].sensorStatus = ACTIVE;
                 break;
             default:
@@ -205,38 +152,37 @@ void init_sensors(Sensor *sensors, int *cnt_sensors) {
 
 // 0: display all infos, 1: display short infos
 void display_sensors(const Sensor *sensors, int cnt, unsigned char short_list) {
-    int i = 0;
     for(int i=0; i<cnt; i++) {
         if(sensors[i].sensorStatus == ACTIVE) {
 
             switch (sensors[i].sensorType) {
                 case TEMPERATURE:
-                    printf("\nTemperature sensor ID %d.\n", sensors[i].id);
+                    printf("\nTemperature sensor ID %hhu.\n", sensors[i].id);
                     printf("Name: %s.\n", sensors[i].name);
                     if(short_list != 1) {
                         printf("Current status: %s\n", sensor_status_str[sensors[i].sensorStatus]);
-                        printf("Range %d to %d celsious.\n", sensors[i].sensorData.temperature.min_range, sensors[i].sensorData.temperature.max_range);
-                        printf("Current reading %d celsious.\n", sensors[i].sensorData.temperature.reading);
+                        printf("Range %hd to %hd celsious.\n", sensors[i].sensorData.temperature.min_range, sensors[i].sensorData.temperature.max_range);
+                        printf("Current reading %.2f celsious.\n", sensors[i].sensorData.temperature.reading);
                     }
                     break;
 
                 case HUMIDITY:
-                    printf("\nHumidity sensor ID %d.\n", sensors[i].id);
+                    printf("\nHumidity sensor ID %hhu.\n", sensors[i].id);
                     printf("Name: %s.\n", sensors[i].name);
                     if(short_list != 1) {
                         printf("Current status: %s\n", sensor_status_str[sensors[i].sensorStatus]);
                         printf("Callibration factor %.2f.\n", sensors[i].sensorData.humidity.calibration);
-                        printf("Current reading %d.\n", sensors[i].sensorData.humidity.reading);
+                        printf("Current reading %.2f.\n", sensors[i].sensorData.humidity.reading);
                     }
                     break;
 
                 case PRESSURE:
-                    printf("\nPressure sensor ID %d.\n", sensors[i].id);
+                    printf("\nPressure sensor ID %hhu.\n", sensors[i].id);
                     printf("Name: %s\n", sensors[i].name);
                     if(short_list != 1) {
                         printf("Current status: %s\n", sensor_status_str[sensors[i].sensorStatus]);
-                        printf("Altitude compensation %d.\n", sensors[i].sensorData.pressure.altitude);
-                        printf("Current reading %d.\n", sensors[i].sensorData.pressure.altitude);
+                        printf("Altitude compensation %hd.\n", sensors[i].sensorData.pressure.altitude);
+                        printf("Current reading %.2f.\n", sensors[i].sensorData.pressure.reading);
                     }
                     break;                
                 default:
@@ -246,7 +192,7 @@ void display_sensors(const Sensor *sensors, int cnt, unsigned char short_list) {
     }
 }
 
-void deactivate_all_sensors(Sensor *sensors, int cnt) {
+void deactivate_all_sensors(Sensor *sensors, const int cnt) {
     for(int i=0; i<cnt; i++) {
         if(sensors[i].sensorStatus == ACTIVE) {
             sensors[i].sensorStatus = INACTIVE;
@@ -254,7 +200,7 @@ void deactivate_all_sensors(Sensor *sensors, int cnt) {
     }
     printf("\nAll sensors are deactivated!\n");
 }
-void activate_all_sensors(Sensor *sensors, int cnt) {
+void activate_all_sensors(Sensor *sensors, const int cnt) {
     for(int i=0; i<cnt; i++) {
         if(sensors[i].sensorStatus == INACTIVE) {
             sensors[i].sensorStatus = ACTIVE;
@@ -264,7 +210,7 @@ void activate_all_sensors(Sensor *sensors, int cnt) {
 }
 
 // sensor_type: TEMPERATURE:0, HUMIDITY:1, PRESSURE:2, ALL:3
-void deactivate_sensors_by_type(Sensor *sensors, int cnt, SensorType sensor_type) {
+void deactivate_sensors_by_type(Sensor *sensors, const int cnt, const SensorType sensor_type) {
 
     // Pointer to a const char. string literal "ALL_SENSOR_TYPES" does not change
     // but pointer type_str can change
@@ -289,7 +235,7 @@ void deactivate_sensors_by_type(Sensor *sensors, int cnt, SensorType sensor_type
 }
 
 // sensor_type: TEMPERATURE:0, HUMIDITY:1, PRESSURE:2, ALL:3
-void activate_sensors_by_type(Sensor *sensors, int cnt, SensorType sensor_type) {
+void activate_sensors_by_type(Sensor *sensors, const int cnt, const SensorType sensor_type) {
 
     // Pointer to a const char. string literal "ALL_SENSOR_TYPES" does not change
     // but pointer type_str can change
@@ -333,11 +279,11 @@ void activate_sensors_by_type(Sensor *sensors, int cnt, SensorType sensor_type) 
  * [8] -> ID 9  Pres3
  * [9] -> ID 10 Pres4
 */
-void deactivate_sensor_by_ID(Sensor *sensors, int id) {
+void deactivate_sensor_by_ID(Sensor *sensors, const int id) {
     int index = id - 1;
     sensors[index].sensorStatus = INACTIVE;
 }
-void activate_sensor_by_ID(Sensor *sensors, int id) {
+void activate_sensor_by_ID(Sensor *sensors, const int id) {
     int index = id - 1;
     sensors[index].sensorStatus = ACTIVE;
 }
