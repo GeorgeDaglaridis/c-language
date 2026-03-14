@@ -19,21 +19,18 @@ typedef enum {
 } SensorStatus;
 
 typedef union SensorData {
-    struct 
-    {
+    struct {
         short int min_range;
         short int max_range;
         float reading;        
     } temperature;
 
-    struct 
-    {
+    struct {
         float calibration;
         float reading;
     } humidity;
 
-    struct 
-    {
+    struct {
         short int altitude;
         float reading;        
     } pressure;
@@ -103,38 +100,53 @@ int main() {
 void init_sensors(Sensor *sensors, int *cnt_sensors) {
 
     printf("How many sensors you want to initialize (max 10)? : ");
-    scanf("%d", cnt_sensors);
+    if( (scanf("%d", cnt_sensors) != 1) || (*cnt_sensors < 1) ) {
+        printf("ERROR: Invalid input\n");
+        exit(1);
+    }
 
     // Check the number of sensors provided is within the limit (SENSORS_MAX_CAPACITY).
     if(*cnt_sensors > SENSORS_MAX_CAPACITY) {
-        printf("Error: more sensors provided than the available\n");
+        printf("ERROR: more sensors provided than the available\n");
         exit(1);
     }
 
     int i = 0;
     while(i < *cnt_sensors) {
         printf("\nProvide the type of sensor, (TEMPERATURE:0, HUMIDITY:1, PRESSURE:2): ");
-        scanf("%d", &sensors[i].sensorType);
+        if(scanf("%d", &sensors[i].sensorType) != 1) {
+            printf("ERROR: Invalid negative input\n");
+            exit(1);
+        }
         printf("\n");
 
         switch (sensors[i].sensorType) {
             case TEMPERATURE:
                 printf("Provide ID, name, min and max values, of Temperature sensor: ");
-                scanf("%hhu %s %hd %hd", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.temperature.min_range, &sensors[i].sensorData.temperature.max_range);
+                if(scanf("%hhu %s %hd %hd", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.temperature.min_range, &sensors[i].sensorData.temperature.max_range) == 0) {
+                    printf("ERROR: Invalid input\n");
+                    exit(1);
+                }
                 printf("Initialize a Temperature sensor: ID %hhu, \"%s\", range %hd to %hd celsius.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.temperature.min_range, sensors[i].sensorData.temperature.max_range);
                 sensors[i].sensorStatus = ACTIVE;
                 break;
 
             case HUMIDITY:
                 printf("Provide ID, name, and calibration factor of Humidity sensor: ");
-                scanf("%hhu %s %f", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.humidity.calibration);
+                if(scanf("%hhu %s %f", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.humidity.calibration) == 0) {
+                    printf("ERROR: Invalid input\n");
+                    exit(1);
+                }
                 printf("Initialize a Humidity sensor: ID %hhu, \"%s\", callibration factor %.2f.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.humidity.calibration);
                 sensors[i].sensorStatus = ACTIVE;
                 break;
 
             case PRESSURE:
                 printf("Provide ID, name, and altitude compensation of Pressure sensor: ");
-                scanf("%hhu %s %hd", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.pressure.altitude);
+                if(scanf("%hhu %s %hd", &sensors[i].id, &sensors[i].name, &sensors[i].sensorData.pressure.altitude) == 0) {
+                    printf("ERROR: Invalid input\n");
+                    exit(1);
+                }
                 printf("Initialize a Pressure sensor: ID %hhu, \"%s\", altitude compensation %hd m.\n", sensors[i].id, sensors[i].name, sensors[i].sensorData.pressure.altitude);
                 sensors[i].sensorStatus = ACTIVE;
                 break;
