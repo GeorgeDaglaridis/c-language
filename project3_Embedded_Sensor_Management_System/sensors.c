@@ -23,17 +23,18 @@ typedef union SensorData {
         short int min_range;
         short int max_range;
         float reading;        
-    } temperature;
+    } __attribute__((packed)) temperature; // Not sure __attribute__((packed)) is needed in this project
+                                           // It was added for educationla puproses
 
     struct {
         float calibration;
         float reading;
-    } humidity;
+    } __attribute__((packed)) humidity;
 
     struct {
         short int altitude;
         float reading;        
-    } pressure;
+    } __attribute__((packed)) pressure;
     
 } SensorData;
 
@@ -43,7 +44,7 @@ typedef struct sensor {
     SensorType sensorType;
     SensorData sensorData;
     SensorStatus sensorStatus;  
-} Sensor;
+} __attribute__((packed)) Sensor;
 
 // Function prototypes - Function declarations used only in this .c file (static)
 // If used by othe .c files as well remove static keyword and put them in a .h file
@@ -72,9 +73,22 @@ static const char sensor_type_str[ALL_SENSOR_TYPES][12] = {"TEMPERATURE", "HUMID
 
 int main() {
 
+    /*
+    SensorData sensorData;
+
+    printf("sizeof(SensorType): %d\n", sizeof(SensorType));
+    printf("sizeof(SensorStatus): %d\n", sizeof(SensorStatus));
+    printf("sizeof(sensorData.temperature): %d\n", sizeof(sensorData.temperature));
+    printf("sizeof(sensorData.humidity): %d\n", sizeof(sensorData.humidity));
+    printf("sizeof(sensorData.pressure): %d\n", sizeof(sensorData.pressure));
+    printf("sizeof(sensorData.temperature): %d\n", sizeof(sensorData.temperature));
+    printf("sizeof(SensorData): %d\n", sizeof(SensorData));
+    printf("sizeof(Sensor): %d\n", sizeof(Sensor));
+    */
+   
     Sensor sensors[SENSORS_MAX_CAPACITY] = {0};
     int cnt_sensors = 0;
-
+    
     init_sensors(sensors, &cnt_sensors);
 
     //deactivate_sensors(sensors, cnt_sensors);
