@@ -49,7 +49,7 @@ typedef struct sensor {
 // Function prototypes - Function declarations used only in this .c file (static)
 // If used by othe .c files as well remove static keyword and put them in a .h file
 static void init_sensors(Sensor *sensors, int *cnt_sensors);
-static void display_sensors(const Sensor *sensors, const int cnt, unsigned char short_list);
+static void display_sensors(const Sensor *sensors, const int cnt, const SensorStatus status, const uint8_t detail_list);
 static void deactivate_all_sensors(Sensor *sensors, const int cnt);
 static void activate_all_sensors(Sensor *sensors, const int cnt);
 static void deactivate_sensors_by_type(Sensor *sensors, const int cnt, const SensorType sensor_type);
@@ -58,17 +58,17 @@ static void deactivate_sensor_by_ID(Sensor *sensors, const int id);
 static void activate_sensor_by_ID(Sensor *sensors, const int id);
 
 // Global arrays
-static const char sensor_status_str[SENSOR_STATUS_CNT][9] = {"INACTIVE", "ACTIVE", "ERROR"}; // lives in FLASH/ROM
+static const char sensor_status_str[SENSOR_STATUS_CNT][9] = {"Inactive", "Active", "Error"}; // lives in FLASH/ROM
 // or
-// static const char *sensor_status_str[SENSOR_STATUS_CNT] = {"INACTIVE", "ACTIVE", "ERROR"}; // The string literals live in FLASH/ROM, but the 3 pointers live in RAM
+// static const char *sensor_status_str[SENSOR_STATUS_CNT] = {"Inactive", "Active", "Error"}; // The string literals live in FLASH/ROM, but the 3 pointers live in RAM
 // or
-// static const char const *sensor_status_str[SENSOR_STATUS_CNT] = {"INACTIVE", "ACTIVE", "ERROR"}; // The string literals and the 3 pointers all live in FLASH/ROM
+// static const char const *sensor_status_str[SENSOR_STATUS_CNT] = {"Inactive", "Active", "Error"}; // The string literals and the 3 pointers all live in FLASH/ROM
 
-static const char sensor_type_str[ALL_SENSOR_TYPES][12] = {"TEMPERATURE", "HUMIDITY", "PRESSURE"}; // lives in FLASH/ROM
+static const char sensor_type_str[ALL_SENSOR_TYPES][12] = {"Temperature", "Humidity", "Pressure"}; // lives in FLASH/ROM
 // or
-// static const char *sensor_type_str[ALL_SENSOR_TYPES] = {"TEMPERATURE", "HUMIDITY", "PRESSURE"}; // The string literals live in FLASH/ROM, but the 3 pointers live in RAM
+// static const char *sensor_type_str[ALL_SENSOR_TYPES] = {"Temperature", "Humidity", "Pressure"}; // The string literals live in FLASH/ROM, but the 3 pointers live in RAM
 // or
-// static const char const *sensor_type_str[ALL_SENSOR_TYPES] = {"TEMPERATURE", "HUMIDITY", "PRESSURE"}; // The string literals and the 3 pointers all live in FLASH/ROM
+// static const char const *sensor_type_str[ALL_SENSOR_TYPES] = {"Temperature", "Humidity", "Pressure"}; // The string literals and the 3 pointers all live in FLASH/ROM
 
 
 int main() {
@@ -91,22 +91,27 @@ int main() {
     
     init_sensors(sensors, &cnt_sensors);
 
-    //deactivate_sensors(sensors, cnt_sensors);
-    //activate_sensors(sensors, cnt_sensors); 
-
-    display_sensors(sensors, cnt_sensors, 0); // 0: display all infos, 1: display short infos
+    display_sensors(sensors, cnt_sensors, ACTIVE, 0); // 0: display all infos, 1: display short infos
+    //display_sensors(sensors, cnt_sensors, INACTIVE, 0);
     //deactivate_sensor_by_ID(sensors, 2);       // deactivates sensor ID 2 (index: ID # -1)
-    //display_sensors(sensors, &cnt_sensors, 0);
+    //display_sensors(sensors, &cnt_sensors, ACTIVE, 0);
     //activate_sensor_by_ID(sensors, 2);
-    //display_sensors(sensors, &cnt_sensors, 0);
+    //display_sensors(sensors, &cnt_sensors, ACTIVE, 0);
     deactivate_sensors_by_type(sensors, cnt_sensors, TEMPERATURE);
-    display_sensors(sensors, cnt_sensors, 0);
+    display_sensors(sensors, cnt_sensors, ACTIVE, 0);
+    //display_sensors(sensors, cnt_sensors, INACTIVE, 0);
     deactivate_sensors_by_type(sensors, cnt_sensors, HUMIDITY);
-    display_sensors(sensors, cnt_sensors, 0);
+    display_sensors(sensors, cnt_sensors, ACTIVE, 0);
+    //display_sensors(sensors, cnt_sensors, INACTIVE, 0);
     deactivate_sensors_by_type(sensors, cnt_sensors, PRESSURE);
-    display_sensors(sensors, cnt_sensors, 0);
+    display_sensors(sensors, cnt_sensors, ACTIVE, 0);
+    //display_sensors(sensors, cnt_sensors, INACTIVE, 0);
     activate_sensors_by_type(sensors, cnt_sensors, ALL_SENSOR_TYPES);
-    display_sensors(sensors, cnt_sensors, 0);
+    display_sensors(sensors, cnt_sensors, ACTIVE, 0);
+    //display_sensors(sensors, cnt_sensors, INACTIVE, 0);
+
+    //deactivate_sensors(sensors, cnt_sensors);
+    //activate_sensors(sensors, cnt_sensors);
 
     return 0;
 }
@@ -133,6 +138,8 @@ void init_sensors(Sensor *sensors, int *cnt_sensors) {
             exit(1);
         }
         printf("\n");
+
+        sensors[i].sensorStatus = INACTIVE; // Make sure sensor is inactive before you start initializing it!
 
         switch (sensors[i].sensorType) {
             case TEMPERATURE:
@@ -177,36 +184,34 @@ void init_sensors(Sensor *sensors, int *cnt_sensors) {
 }
 
 // 0: display all infos, 1: display short infos
-void display_sensors(const Sensor *sensors, int cnt, unsigned char short_list) {
-    for(int i=0; i<cnt; i++) {
-        if(sensors[i].sensorStatus == ACTIVE) {
+void display_sensors(const Sensor *sensors, int cnt, const SensorStatus status, const uint8_t detail_list) {
+
+    printf("\n----------- Display %s sensors -----------\n\n", sensor_status_str[status]);
+
+    for(int i= 0; i < cnt; i++) {
+        if(sensors[i].sensorStatus == status) {
+
+            printf("\n%s sensor ID %hhu.\n", sensor_type_str[sensors[i].sensorType], sensors[i].id);
+            printf("Name: %s.\n", sensors[i].name);
+            printf("Current status: %s\n", sensor_status_str[sensors[i].sensorStatus]);
 
             switch (sensors[i].sensorType) {
                 case TEMPERATURE:
-                    printf("\nTemperature sensor ID %hhu.\n", sensors[i].id);
-                    printf("Name: %s.\n", sensors[i].name);
-                    if(short_list != 1) {
-                        printf("Current status: %s\n", sensor_status_str[sensors[i].sensorStatus]);
+                    if(detail_list != 1) {
                         printf("Range %hd to %hd celsious.\n", sensors[i].sensorData.temperature.min_range, sensors[i].sensorData.temperature.max_range);
                         printf("Current reading %.2f celsious.\n", sensors[i].sensorData.temperature.reading);
                     }
                     break;
 
                 case HUMIDITY:
-                    printf("\nHumidity sensor ID %hhu.\n", sensors[i].id);
-                    printf("Name: %s.\n", sensors[i].name);
-                    if(short_list != 1) {
-                        printf("Current status: %s\n", sensor_status_str[sensors[i].sensorStatus]);
+                    if(detail_list != 1) {
                         printf("Callibration factor %.2f.\n", sensors[i].sensorData.humidity.calibration);
                         printf("Current reading %.2f.\n", sensors[i].sensorData.humidity.reading);
                     }
                     break;
 
                 case PRESSURE:
-                    printf("\nPressure sensor ID %hhu.\n", sensors[i].id);
-                    printf("Name: %s\n", sensors[i].name);
-                    if(short_list != 1) {
-                        printf("Current status: %s\n", sensor_status_str[sensors[i].sensorStatus]);
+                    if(detail_list != 1) {
                         printf("Altitude compensation %hd.\n", sensors[i].sensorData.pressure.altitude);
                         printf("Current reading %.2f.\n", sensors[i].sensorData.pressure.reading);
                     }
@@ -219,7 +224,7 @@ void display_sensors(const Sensor *sensors, int cnt, unsigned char short_list) {
 }
 
 void deactivate_all_sensors(Sensor *sensors, const int cnt) {
-    for(int i=0; i<cnt; i++) {
+    for(int i= 0; i < cnt; i++) {
         if(sensors[i].sensorStatus == ACTIVE) {
             sensors[i].sensorStatus = INACTIVE;
         }
@@ -227,7 +232,7 @@ void deactivate_all_sensors(Sensor *sensors, const int cnt) {
     printf("\nAll sensors are deactivated!\n");
 }
 void activate_all_sensors(Sensor *sensors, const int cnt) {
-    for(int i=0; i<cnt; i++) {
+    for(int i= 0; i < cnt; i++) {
         if(sensors[i].sensorStatus == INACTIVE) {
             sensors[i].sensorStatus = ACTIVE;
         }
@@ -242,7 +247,7 @@ void deactivate_sensors_by_type(Sensor *sensors, const int cnt, const SensorType
     // but pointer type_str can change
     const char *type_str = "ALL_SENSOR_TYPES";
 
-    for(int i=0; i<cnt; i++) {
+    for(int i= 0; i < cnt; i++) {
         // Deactivate all sensors
         if(sensor_type == ALL_SENSOR_TYPES) {
             if(sensors[i].sensorStatus == ACTIVE) {
@@ -267,7 +272,7 @@ void activate_sensors_by_type(Sensor *sensors, const int cnt, const SensorType s
     // but pointer type_str can change
     const char *type_str = "ALL_SENSOR_TYPES";
 
-    for(int i=0; i<cnt; i++) {
+    for(int i= 0; i < cnt; i++) {
         // Deactivate all sensors
         if(sensor_type == ALL_SENSOR_TYPES) {
             if(sensors[i].sensorStatus == INACTIVE) {
