@@ -1,31 +1,26 @@
+#include <stddef.h>
 
-void piyush() {
+void function_1() {
+    int a = 3 + 2;
+}
+
+void function_2() {
+    int b = 4 + 2;
+}
+
+int piyush() {
   
-    // int a = 0x1;
-    // int c = a << 1;
-    // unsigned int a = 0x1;
-    // unsigned int c = a << 1; 
-    // c = a << 31;
-    // c = a << 32;
-    // c = a << 33;
+     //void (*func_ptr)() = function_1; // same: void (*func_ptr)() = &function_1;
+    void (*func_ptr)() = NULL;
+
+    func_ptr = function_1;
+    func_ptr();
     
-    // int a = 0x80000000;
-    // int c = a << 1;
-    // unsigned int a = 0x80000000;
-    // unsigned int c = a << 1;
-    // c = a << 31;
-    // c = a << 32;
-    // c = a << 33;
+    func_ptr = function_2;
+    func_ptr();
 
-    // int a = 0x1;
-    // int c = a >> 1;
-    // c = a >> 2;
+    int c = 8 + 1;
 
-    // a = 0x8;
-    // c = a >> 1; // 0x4
-    // c = a >> 2; // 0x2
-    // c = a >> 3; // 0x1
-    // c = a >> 4; // 0x0
-    // c = a >> 5; // 0x0
+    return 0;
 
 }
